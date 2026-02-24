@@ -2,7 +2,7 @@
 
 **Authors:** [Neel Sanjaybhai Faganiya, Ibrahim Mohammed Sayem, Felix Wang]
 
-**Readings:**   
+**Readings:** (We don't need to cite them all, just some relevant recent papers that I read before on this line of research)
 - CodeFuse-CR-Bench: A Comprehensiveness-aware Benchmark for End-to-End Code Review Evaluation in Python Projects [1]
 - LoCoBench: A Benchmark for Long-Context Large Language Models in Complex Software Engineering [2]
 - CrossCodeEval: A Diverse and Multilingual Benchmark for Cross-File Code Completion [3]
