@@ -178,13 +178,9 @@ Require the PR submitter to explicitly justify its inclusion. Explicitly documen
 
 Ignore it and merge it into the repo. 
 
-
-**Example:**  
-Provide a brief illustrative example (code or pseudo-code if helpful).
-
 ---
 
-### Guideline 2: Use Automated Dependency Management Tools
+### Guideline 2: Use Automated Dependency Management Tools [17]
 
 **Description:**
 
