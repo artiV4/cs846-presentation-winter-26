@@ -1,192 +1,157 @@
-# Evaluation — Problem B Test Tasks
-
-This evaluation describes what a strong answer should cover for each task, and contrasts weak vs. strong model outputs.
+## Evaluation Problem B
 
 ---
 
-## Task 1 — Code Review (Overall PR Review)
+## Task 1: Code review
 
-### What to Review For
+### What to review for
 
-- **Correctness and error handling** in `user_helpers.py` given the PR’s goal (user display lookup for the dashboard header and support email lookup).
-- **Security and data exposure**, especially anything surfaced to the UI (names, roles, emails) vs. what must remain server-side.
-- **Performance and responsiveness**, including unnecessary or redundant API calls and how they affect the dashboard render path.
-- **Alignment with PR constraints and scope** in `test/PR.md` (no internal IDs in UI, 2s timeout, dashboard responsiveness, “Out of scope” section).
+- **Correctness**: Whether the helpers implement the intended behavior from the PR without logical bugs.
+- **Error handling**: Handling of network/API failures, timeouts, malformed responses, and missing fields.
+- **Security / UI exposure**: Avoid exposing internal IDs or unintended fields to the UI.
+- **Performance / latency**: Avoid redundant API calls and hot-path latency, especially for the dashboard header.
+- **Alignment with PR constraints**: Explicitly tie comments to constraints from `PR.md` (timeouts, no internal IDs, scope).
 
-### Bad Example
+### Bad example
 
-**Characteristics of Output:**
+- **Characteristics**
+  - Provides a reasonable review, but:
+    - Less explicit structuring of context vs. review criteria.
+    - Weaker “stepwise” framing; jumps straight into sections without a clear “job description” for the model.
+    - Mentions constraints (e.g., timeouts, internal IDs) but does not foreground them as the primary lens for every comment.
+    - Less emphasis on assumptions/non-goals and how they relate to the PR description.
+- **Why this is weak**
+  - Easier for the model to give generic or partially-scoped feedback because the prompt and answer structure do not strictly separate “context summary” from “focused review.”
+  - Constraints are referenced, but not consistently mapped back for each recommendation, making it harder to see traceability to the PR.
 
-- Focuses mostly on **style and formatting** (imports inside functions, docstring style, variable naming).
-- Mentions generic ideas like “add logging” or “add comments” without tying them to the PR goal.
-- Points out the hardcoded URL but does not connect it to risk in this specific context.
-- Does not mention **timeout handling**, **dashboard responsiveness**, or **constraints** from the PR.
-- Treats the file as an isolated script instead of part of a dashboard header path.
+### Good example
 
-**Why This Is Weak**
-
-- Feedback is **generic and context-agnostic**; another file could receive the same comments.
-- It ignores the **stated constraints** (no internal IDs, 2-second timeout, responsive dashboard).
-- It fails to identify concrete risks like redundant API calls or missing error handling that would affect the dashboard UX.
-- The review does not help a maintainer decide **what to fix first** or why.
-
-### Good Example
-
-**Characteristics of Output:**
-
-- Checks that `format_user_for_header` and related helpers are **correct** for the PR goal (proper name/role display, handling of missing roles, handling user-not-found).
-- Calls out **lack of timeout and error handling** on external API calls and connects this to the “dashboard must not block” requirement.
-- Highlights **redundant or repeated calls** to the user API (e.g., fetching full lists for simple lookups) and explains their impact on **latency** and **responsiveness**.
-- Mentions **security/data-exposure issues** (e.g., returning or exposing fields that should not reach the UI) where relevant.
-- Explicitly references the **constraints and “Out of scope”** items from the PR and avoids asking for unrelated refactors.
-
-**Why This Is Strong**
-
-- Feedback is **anchored to the PR description** and constraints, not just general best practices.
-- It balances correctness, security, and performance with a clear sense of **impact on the dashboard**.
-- The comments are **actionable** (e.g., “add timeout parameter here,” “avoid calling `get_user_list()` on every header render”) and easy to implement.
-- It respects scope, which increases **trust** in the review and makes it realistic for production use.
+- **Characteristics**
+  - Follows a **structured, context-first pattern**:
+    - `Step 1 — Context summary` (intent, affected components, high-risk areas).
+    - `Step 2 — Focused review` with clearly scoped dimensions (correctness, error handling, security, performance).
+  - **Strong alignment with guidelines**:
+    - Ties each concern (timeouts, internal IDs, error handling, performance) explicitly to PR constraints.
+    - Calls out assumptions and non-goals (authentication upstream, no architectural redesign).
+  - **Actionable and targeted**:
+    - Concrete recommendations (e.g., add `timeout=2`, handle `KeyError`, avoid redundant API calls, consider pagination).
+- **Why it is good**
+  - Mirrors the “structured, context-first prompt” guideline and “explicitly state assumptions and non-goals.”
+  - High signal-to-noise: focuses on high-impact issues and reduces generic style feedback.
+  - Easier to review and verify against PR requirements.
 
 ---
 
-## Task 2 — Security and Data-Exposure Concerns
+## Task 2: Security and data-exposure concerns
 
-### What to Review For
+### What to review for
 
-- **Which data is exposed** to the UI vs. kept server-side (names, roles, emails, IDs).
-- **Where inputs are not validated** or sanitized (e.g., `user_id`, `role`, `email`), taking into account that some validation is upstream.
-- **URL construction and injection risks**, including query parameters based on user-controlled inputs.
-- **Enumeration or scraping risks**, such as unbounded user listing or email-based lookups that could leak information.
-- Whether the findings are **prioritized** according to the PR’s security constraints (no internal IDs in UI) and realistic attack surface.
+- **Data exposure**: Where internal IDs, emails, roles, or other sensitive data might reach the UI.
+- **Input validation assumptions**: What is trusted upstream vs. what should be validated here.
+- **Injection / URL construction risks**: How user-controlled values are interpolated into URLs or parameters.
+- **Scope alignment**: Security considerations that are in scope (API integration, exposure to UI) vs. out of scope (auth, session, unrelated modules).
 
-### Bad Example
+### Bad example
 
-**Characteristics of Output:**
+- **Characteristics**
+  - Enumerates relevant concerns (IDs, emails, URL construction, API response validation).
+  - Mentions in/out-of-scope topics, but:
+    - Less explicit context-first framing (no clear “Step 1 — Context summary”).
+    - Weaker linkage between each recommendation and specific PR constraints.
+    - More diffuse structure; security themes are present but not tightly organized under a review focus.
+- **Why it is bad**
+  - Harder to see which issues are highest risk vs. nice-to-have, because focus is less clearly scoped.
+  - Lacks the explicit structured prompt style emphasized in the guideline, so it is more likely to drift into generic comments or overreach.
 
-- Lists a long set of **generic security concerns** (e.g., SSL verification, lack of auth, generic “PII exposure”) without reference to the PR context.
-- Mentions that emails are PII but does not distinguish between UI vs. server-only use.
-- Flags many theoretical issues (e.g., “what if the API is compromised?”) that are **not grounded in this code**.
-- Does not mention the PR’s explicit **“do not expose internal IDs”** constraint.
-- Lacks any prioritization; all bullet points appear equally important.
+### Good example
 
-**Why This Is Weak**
-
-- The answer feels **boilerplate** and not tailored to `user_helpers.py`.
-- It fails to highlight the **main contract** in the PR (no internal IDs in the front end) and whether the code respects or violates it.
-- The lack of prioritization makes it hard to understand what to fix first.
-- Some speculative risks distract from the **real data flows** in this PR.
-
-### Good Example
-
-**Characteristics of Output:**
-
-- Explicitly analyzes what each helper returns and **where the data is consumed** (dashboard header vs. support tool).
-- Calls out any exposure of **internal IDs** or sensitive fields that could reach the UI, and confirms when helper usage is server-only.
-- Identifies **URL construction risks** (e.g., concatenating `role` into a query string) and suggests safer alternatives.
-- Notes **user enumeration** or email lookup risks and explains the impact (e.g., potential to probe for valid accounts).
-- Prioritizes risks according to the PR constraints and provides **concrete mitigations**.
-
-**Why This Is Strong**
-
-- It is **specific to this PR and code**, not generic security advice.
-- The analysis aligns with the **stated constraints** and system boundaries (auth & validation upstream).
-- Recommendations are **actionable** and scoped (e.g., “avoid returning IDs to UI,” “validate/sanitize role values,” “rate-limit or log abuse on email lookups”).
-- The reviewer shows clear understanding of **which data paths matter most** for real-world exposure.
+- **Characteristics**
+  - Starts with a **context summary** (intent, affected components, high-risk areas) before listing issues.
+  - Clearly labeled sections for **data exposure risks**, **input validation**, **injection/URL risks**, and **other security considerations**.
+  - Explicitly aligns with PR assumptions and non-goals (auth and validation upstream, no architectural redesign).
+  - Recommendations are concrete and scoped (e.g., avoid passing `id` to frontend, consider `params` for `requests.get`, validate emails if usage expands).
+- **Why it is good**
+  - Directly operationalizes the guideline: context-first, focused review on high-impact security and exposure risks.
+  - Keeps security feedback inside the stated system boundary, reducing hallucinated architectural advice.
+  - Makes it easier for reviewers to decide what to fix immediately vs. what to monitor.
 
 ---
 
-## Task 3 — Test and Edge-Case Suggestions
+## Task 3: Test and edge-case suggestions
 
-### What to Review For
+### What to review for
 
-- **Concrete test scenarios** for the helpers in `user_helpers.py`, especially around the external API behavior.
-- **Failure modes**: network errors, timeouts, invalid JSON, missing fields, user not found, empty lists.
-- **Boundary conditions**: unusual roles, duplicate emails, large user lists.
-- Coverage of both **dashboard header behavior** and **support tool lookups**, connected back to the PR’s risks and constraints.
+- **Coverage of critical failure modes**: Network/API failures, timeouts, non-200 responses, malformed JSON.
+- **Data integrity scenarios**: Empty responses, missing keys, unexpected types.
+- **User-centric edge cases**: User not found, duplicate users, role filters returning no users.
+- **Performance-related scenarios**: Large responses, repeated calls in hot paths.
+- **Security/privacy testing**: Ensuring internal IDs and sensitive fields are not exposed even under unusual API responses.
 
-### Bad Example
+### Bad example
 
-**Characteristics of Output:**
+- **Characteristics**
+  - Lists many relevant edge cases (network failure, timeouts, malformed JSON, empty responses, missing keys, large user list, unexpected fields).
+  - Focuses on “what to test” but:
+    - Lacks an explicit context summary or high-risk framing tied to the PR description.
+    - Treats all edge cases somewhat uniformly, without prioritizing those that matter most for the PR’s constraints.
+    - Less explicit about assumptions/non-goals.
+- **Why it is bad**
+  - Without context-first structuring, it is harder to see **why** these tests are chosen and which are most critical.
+  - The absence of scoped focus makes it closer to a generic “test everything” list rather than a prioritized, PR-specific plan.
 
-- Suggests only very broad test categories: “test success cases,” “test failure cases,” “test invalid input.”
-- Does not mention the **external API** or how it might fail (timeouts, partial responses, bad JSON).
-- Ignores the PR’s constraints and risks (e.g., dashboard responsiveness, no internal IDs in UI).
-- Fails to distinguish between **UI-facing behavior** and **internal support tool behavior**.
-- Offers few or no examples of specific inputs or conditions.
+### Good example
 
-**Why This Is Weak**
-
-- The suggestions are **too high-level** for a tester to turn directly into test cases.
-- It does not help ensure coverage of **realistic edge cases** for this dashboard + API scenario.
-- It misses critical failure paths (e.g., slow API, empty user list, missing keys), leaving the most important behavior untested.
-- There is no linkage to the **constraints in the PR** or to the previous review findings.
-
-### Good Example
-
-**Characteristics of Output:**
-
-- Proposes tests for **success and failure** of each helper, with **specific scenarios**, such as:
-  - API returns 200 but missing `name`, `email`, or `role` keys.
-  - API returns 4xx/5xx or invalid JSON.
-  - `get_user_list(role=\"admin\")` with no admins, or with mixed roles.
-  - `format_user_for_header` when user is not found in `get_user_list`.
-  - `lookup_by_email` with duplicate emails, unknown email, and mixed-case email.
-- Includes tests related to **performance and responsiveness**, such as ensuring that repeated calls don’t block the dashboard (or are cached/limited if design allows).
-- Connects tests to **constraints** (e.g., “verify that no internal IDs ever appear in the header output”).
-- Suggests both **unit-level tests** and a few **integration-style checks** aligned with the PR’s Testing section.
-
-**Why This Is Strong**
-
-- The tests are **immediately implementable** and clearly derived from the code and PR.
-- They explicitly cover **edge cases and failure modes** that would cause user-visible issues.
-- They reinforce the PR’s constraints (no IDs in UI, responsiveness, correct role display).
-- This kind of test plan would **significantly reduce regression risk** for this change.
+- **Characteristics**
+  - Begins with a **context summary** (intent, affected components, high-risk/complex areas).
+  - Groups tests under clear categories: network/API failures, malformed responses, user-not-found scenarios, role filtering, performance, data exposure, input edge cases.
+  - Aligns test ideas explicitly with PR focus (API timeout, dashboard responsiveness, internal ID exposure).
+  - States assumptions and non-goals at the end.
+- **Why it is good**
+  - Reflects the guideline’s emphasis on **context first, then focused criteria** (here, mapped to testing dimensions).
+  - Prioritizes high-impact tests (timeouts, data exposure, hot-path behavior) over generic or low-value ones.
+  - Easier to translate directly into a concrete test plan for this PR.
 
 ---
 
-## Task 4 — High-Risk Areas and Review Focus
+## Task 4: High-risk areas and review focus
 
-### What to Review For
+### What to review for
 
-- Identification of **high-risk or complex areas** in the change (e.g., external API calls in the render path, data shaping for UI output, email lookup behavior).
-- Clear proposal of **what the review should focus on**, aligned with the PR’s Risk & Impact and Constraints sections.
-- Explicit mention of **what is out of scope** or should be deprioritized (e.g., broad refactors, style-only issues).
+- **High-risk areas**:
+  - External API integration and reliability (errors, timeouts, malformed data).
+  - Data exposure to the UI (IDs, emails, roles).
+  - Performance issues and redundant calls in hot paths (especially header rendering).
+  - Fragile assumptions about the external API (pagination, fields always present).
+- **Review focus vs. non-goals**:
+  - Focus on correctness, security, performance in the new helpers.
+  - Avoid architectural redesign, upstream auth/session concerns, and unrelated refactoring.
 
-### Bad Example
+### Bad example
 
-**Characteristics of Output:**
+- **Characteristics**
+  - Correctly identifies key high-risk areas (API error handling, data exposure, performance, upstream validation assumptions).
+  - Provides “review should focus on” and “review should avoid” sections.
+  - However:
+    - Does not explicitly use the context-summary-first structure.
+    - Less tightly connected to the specific guideline about structured, AI-led review.
+    - Slightly more generic; could apply to many PRs without clearly tying back to the detailed PR description.
+- **Why it is bad**
+  - Misses the opportunity to first summarize the PR intent and components, which is key for AI-led review workflows.
+  - Focus/avoid lists are good but not clearly grounded in high-risk areas identified via a structured context pass.
 
-- States that “everything that changed is high risk” or lists the entire file without prioritization.
-- Repeats generic concerns (e.g., “check for bugs and security issues”) without tying them to specific parts of the code.
-- Ignores the PR’s **Risk & Impact**, **Constraints**, and **Out of Scope** sections.
-- Suggests focusing on style, naming, or unrelated refactors despite being marked out of scope.
+### Good example
 
-**Why This Is Weak**
-
-- The answer fails to **prioritize reviewer attention**; it treats all lines as equally important.
-- It does not use the rich context provided by `PR.md` to identify where issues would be most harmful.
-- It conflicts with the PR’s scope, which can waste reviewer and developer time.
-- It offers no concrete guidance that would improve the effectiveness of an LLM-assisted review.
-
-### Good Example
-
-**Characteristics of Output:**
-
-- Identifies specific **high-risk zones**, such as:
-  - External API calls in `get_user_display` and `get_user_list` (latency, timeout, error handling).
-  - Logic in `format_user_for_header` that shapes what appears in the dashboard header.
-  - User lookup by email and its implications for support and potential enumeration.
-- States that review should **focus on**:
-  - Correctness and error handling for these helpers.
-  - Performance impact on the dashboard path.
-  - Data exposure to the UI (ensuring no internal IDs are surfaced).
-- Explicitly notes **what to deprioritize**, citing the PR’s “Out of scope” list (e.g., no broad refactors, no auth redesign).
-- Uses the PR’s **Risk & Impact** section to justify why certain functions are higher priority.
-
-**Why This Is Strong**
-
-- It gives reviewers a **clear, prioritized map** of where to spend effort.
-- The focus areas are **well-justified by the PR context**, constraints, and declared risks.
-- It aligns with the guideline’s emphasis on **structured, scoped prompts** and explicit non-goals.
-- This kind of answer would help students (and models) produce **more targeted, valuable reviews** on the second (guided) pass.
+- **Characteristics**
+  - Uses a **two-step structure**: context summary followed by high-risk areas and review focus.
+  - High-risk areas are precisely articulated (external API integration, data exposure, performance, API assumptions).
+  - Review focus is tightly scoped to:
+    - Correctness of API integration and response validation.
+    - Data exposure/privacy and internal ID protection.
+    - Performance in hot paths.
+    - Edge-case handling for empty/malformed responses.
+  - Clear list of what to avoid/deprioritize, aligned with PR non-goals.
+- **Why it is good**
+  - Exemplifies the guideline’s pattern: **context → focused criteria → explicit boundaries**.
+  - Makes it easy for a human reviewer (or an LLM) to allocate attention where it matters most and ignore out-of-scope issues.
+  - Reduces noise and increases the usefulness of the review, especially for large or unfamiliar PRs.
 
