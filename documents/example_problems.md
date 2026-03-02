@@ -38,6 +38,8 @@ Describe the task clearly and precisely.
 
 ### Problem C: Pull Request Supply Chain Review (5 mins)
 
+**Model to use:** GPT-4.1 
+
 **Task Description:**  
 Navigate to `problem_c/`. The `problem_c/before/` folder contains the dependency files `package.json` and `package-lock.json` before the pull request, and the `problem_c/after` folder contains the dependency files `package.json` and `package-lock.json` after the pull request. Please review from a software supply-chain perspective and verify that the update does not introduce supply-chain risk. 
 
@@ -46,6 +48,8 @@ Write your response in the form of a list of findings in bullet points.
 ---
 
 ### Problem D: Northwind Signal Project PR Review (20 mins)
+
+**Model to use:** GPT-4.1 
 
 #### TypeScript Environment Setup
 
