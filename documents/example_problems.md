@@ -66,7 +66,7 @@ Your peer reviewer `wangtkuan-crypto` raised the following comment:
 
 and in `problem_b/user_helpers.py` line 139 - 142:
 
-`Depends(auth.get_current_user) is assigned to _, so the dependency result is discarded and auth isn’t actually enforced.`
+`Depends(auth.get_current_user) is assigned to _, so the dependency result is discarded and auth isn’t actually enforced.` (see the review left by reviewer `wangtkuan-crypto` in the PR for more details).
 
 You are unsure whether this comment is accurate. Use an LLM to validate the comment against the PR description, diff, and code in `problem_b/`. Classify it as `Accurate`, `Partially Accurate`, or `Inaccurate`, then provide brief reasoning and a recommended follow-up action.
 
