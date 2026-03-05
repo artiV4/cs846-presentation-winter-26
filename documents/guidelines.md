@@ -16,6 +16,21 @@
 - uReview: Scalable, Trustworthy GenAI for Code Review at Uber [11] 
 - Detecting malicious pull requests at scale with LLMs [12]
 
+## Relevant Guidelines per Problem
+| Question |          Guidelines               |
+|----------|-----------------------------------|
+| A.1 |  |
+| A.2 |  |
+| A.3 |  |
+| B.1 |  |
+| B.2 |  |
+| B.2 |  |
+| B.3 |  |
+| B.4 |  |
+| C | 2.2 |
+| D.1 | 1, 3 |
+| D.2 | 1, 2.1, 2.3 | 
+
 ## 1. Guidelines
 
 > **Note:** Guidelines should be actionable, specific, and usable during real coding tasks.
@@ -46,54 +61,28 @@ This file defines our TypeScript coding conventions for Copilot code review.
 
 ## Naming Conventions
 
-- Use `camelCase` for variables and functions.
-- Use `PascalCase` for class and interface names.
-- Prefix private variables with `_`.
+- [Define your naming conventions here.]
 
 ## Code Style
 
-- Prefer `const` over `let` when variables are not reassigned.
-- Use arrow functions for anonymous callbacks.
-- Avoid using `any` type; specify more precise types whenever possible.
-- Limit line length to 100 characters.
+- [Define your code style expectations here.]
 
 ## Error Handling
 
-- Always handle promise rejections with `try/catch` or `.catch()`.
-- Use custom error classes for application-specific errors.
+- [Define your error handling expectations here.]
 
 ## Testing
 
-- Write unit tests for all exported functions.
-- Use [Jest](https://jestjs.io/) for all testing.
-- Name test files as `<filename>.test.ts`.
+- [Define your testing expectations here. ]
 
 ## Example
 
 ```typescript
 // Good
-interface User {
-  id: number;
-  name: string;
-}
-
-const fetchUser = async (id: number): Promise<User> => {
-  try {
-    // ...fetch logic
-  } catch (error) {
-    // handle error
-  }
-};
+[One good example here]
 
 // Bad
-interface user {
-  Id: number;
-  Name: string;
-}
-
-async function FetchUser(Id) {
-  // ...fetch logic, no error handling
-}
+[One bad example here]
 ```
 
 **Bad Example:**
@@ -125,7 +114,7 @@ Customized static analysis patterns should neither be overly broad nor overly st
 
 A good static analysis pattern definition should find a balance in between, and match project-specific conventions and expectations. 
 
-A good example can be found at `.github/semgrep.yml`. 
+A static analysis tool pattern definition file template for Semgrep could be found in `.github/semgrep.yml`, please use the LLM to generate more suitable patterns and see the results if you want, or you can check the static analysis result using our template at [PR #11 -> Files Changed](https://github.com/U70-TK/cs846-presentation-winter-26/pull/11/changes).
 
 **Bad Example:**
 
@@ -143,11 +132,11 @@ A large portion of modern security risk does not originate from first-party code
 
 **Good Example:**
 
-In your repository, go to:
+In GitHub, fork the current repository (to make sure you have admin access), then go to:
 
-Settings -> Security -> Advanced Security -> Dependabot -> Enable Dependabot Alerts. 
+Settings -> Security -> Advanced Security -> Dependabot -> Enable Dependabot Alerts -> Enable. 
 
-And then go to:
+Trigger a push on main branch, then go to: 
 
 Security -> Vulnerability Alerts -> Dependabot. 
 
@@ -161,7 +150,7 @@ You are an experienced coding agent, please verify the dependency versions for m
 
 **Description:**
 
-Require automated tests to run in CI and enforce a minimum, meaningful test coverage threshold as a mandatory condition before merging. In addition, manually review test quality — do not rely solely on coverage metrics.
+Before approving a pull request, verify that automated tests are executed in CI and that the change is covered by meaningful tests. Ensure that the project’s minimum test coverage threshold is met, and dedicatedly review the tests themselves to confirm they validate real behavior rather than merely increasing coverage numbers.
 
 **Reasoning:**
 
