@@ -6,8 +6,6 @@ __pycache__/
 # C extensions
 *.so
 
-problem_b/
-
 # Distribution / packaging
 .Python
 build/
