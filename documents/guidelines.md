@@ -466,7 +466,7 @@ Even with well-structured prompts and guidelines, certain issues cannot be fully
 **Tasks for Human Evaluation:**
 1.	**Manual inspection:** Carefully review each remaining failing test and trace the bug to the exact function and line of code.
 2.	**Root cause analysis:** For each remaining bug, explain why the LLM failed to detect it.
-3.	**Targeted prompting:** For each remaining issue, craft a precise, targeted prompt that guides the LLM to the specific fix. This models the Review Responsible role from Cihan et al[15].
+3.	**Targeted prompting:** For each remaining issue, craft a precise, targeted prompt that guides the LLM to the specific fix. This models the Review Responsible role from Haider et al[15].
 4.	**Apply final fixes:** Fix all remaining issues so that the complete test suite passes.
 5.	**Final verification:** Run the full test suite and confirm 100% pass rate.
 
