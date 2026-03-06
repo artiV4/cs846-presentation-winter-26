@@ -216,8 +216,166 @@ Review the tests and identify what's missing.
 
 ----
 
-### Guideline N: [Short, Actionable Title]
-(Repeat the same structure for each guideline.)
+### Guideline 5: Understand the Intent Before You Review
+
+**Description:**
+
+Before judging any code, first establish what it is supposed to do. Read the docstring, inline comments, and any surrounding context. If the intended behavior is unclear, that absence is itself a finding worth flagging. When using an LLM model as part of your review, carry that same understanding into your prompt; otherwise, neither you nor the model has a basis to determine whether the code is correct or just internally consistent.
+
+---
+
+**Reasoning:**
+ - GPT-4o assessed code correctness 68.5% of the time when given a problem description, dropping significantly without it [13]
+ - Code correction ratio improved by up to 23 percentage points simply by including intent in the prompt
+ - Without a specification, reviewers default to syntactic checks and miss semantic failures, code that runs but does the wrong thing
+ - The same gap applies to human reviewers who skip reading comments before assessing logic
+ - Missing or misleading documentation is therefore not a minor style issue; it directly reduces review accuracy
+
+
+---
+
+**Examples:**
+
+**Good Example: context included:**
+
+```text
+ - State what the library is supposed to do before asking Copilot to find bugs 
+ - Describe the intended behavior of each module, not just its file name 
+ - Include any dynamic values or edge cases the library must handle correctly 
+ - Ask Copilot to check whether the code matches the intended behavior, not just whether it runs 
+ - Request a concrete verdict (Approve / Request Changes / Reject) at the end to force a judgment rather than a list of observations
+
+```
+
+**Bad Example:**
+
+```text
+Review the generate () function in fingerprint.py and tell me if there are any bugs.
+```
+
+---
+
+### Guideline 6: Write Structured Review Comments
+
+**Description:**
+
+Every issue you find should be reported in a consistent format that includes the location of the problem, its description, the reason it matters, and the steps to resolve it. A vague comment like this looks unsafe is not actionable. A reviewer reading your report, or a developer receiving your feedback, needs all four pieces to understand and act on the finding. Use this template for every finding:
+[Location] → [What] → [Why_it_matters] → [Suggested_fix]
+
+---
+
+**Reasoning:**
+ - Practitioners rate review comments on three dimensions: Relevance, Information completeness, and Explanation clarity [15].
+ - Comments missing any one of these three dimensions are considered low quality by real developers.
+ - Structured comments reduce back-and-forth between reviewer and author; the fix is self-contained.
+ - When asking Copilot to review code, requesting this format in your prompt directly improves the quality of its output.
+
+ *Example:*
+storage.py: search_by_error_type(), line 79
+→ SQL string interpolated with f-string
+→ Attacker-controlled input reaches the database query unchanged (SQL Injection)
+→ Replace with parameterized query: conn.execute("SELECT * FROM crashes WHERE error_type =?", (error_type,))
+
+---
+
+**Examples:**
+
+**Good Example: Structured Review:**
+
+```text
+ - Ask Copilot to report every issue using a consistent format: location, what, why, and fix 
+ - Specify the exact output format so every finding is self-contained and actionable 
+ - Group findings under clear headings so critical issues are not buried alongside minor ones 
+ - Ask for a severity (Critical / High / Medium / Low) label on each finding so issues can be triaged by importance 
+ - Request a concrete verdict at the end to force an overall judgment on the code
+
+```
+
+**Bad Example: Not Strutured**
+
+```text
+Can you check the crash_dedup code and tell me if there are any problems?
+```
+
+---
+### Guideline 7: Categorize Every Issue Before Suggesting a Fix
+
+**Description:**
+
+Not all issues in a code review carry the same weight or urgency. Before suggesting any fix, classify the finding as a Bug Fix, Enhancement, or Documentation issue, and assign it a priority. This prevents low-priority style suggestions from being treated with the same urgency as a security vulnerability and stops reviewers from merging code that still has critical correctness failures.
+Use this taxonomy for every finding:
+ - **BUG FIX:** code produces wrong output, crashes, or has a security flaw. Must be fixed before merge.
+ - **ENHANCEMENT:** code is correct but can be improved in readability performance, or structure. Negotiable priority.
+ - **DOCUMENTATION:** missing or misleading docstrings, comments, or type hints.
+
+Label each finding with its category and priority:
+ - P1: block merge, fix immediately
+ - P2: fix soon after merge
+ - P3: nice-to-have, low urgency
+
+---
+
+**Reasoning:**
+ - Analysis of 1,600 GPT-assisted pull requests found developers structure their reviews around three task types: Enhancement (60%), Bug Fix (26%), and Documentation (12%) [14].
+ - Conflating these leads to unfocused reviews where critical bugs get buried alongside minor style suggestions.
+ - Labelling by category and priority forces the reviewer to make an explicit triage decision on every finding.
+ - It also helps the author of the code understand what must be addressed before merging versus what is optional.
+
+
+---
+
+**Examples:**
+
+**Good Example: Categorized Issues:**
+
+```text
+ - Ask Copilot to label every finding with a category: Bug Fix, Enhancement, or Documentation 
+ - Assign a priority (P1 (block merge) | P2 (fix soon) | P3 (nice-to-have)) to each finding so it is clear what must be fixed before the merge.
+ - Use a consistent format for every finding so issues are comparable and easy to triage 
+ - Ask Copilot to list the most critical issues first, not in the order it finds them 
+ - Separate security issues from general bug fixes so they are never buried in the output
+
+```
+
+**Bad Example: Not Categorized**
+
+```text
+Review crash_dedup/ and suggest improvements.
+```
+---
+### Guideline 8: Verify Every Suggested Fix Against Existing Tests
+
+**Description:**
+
+Description: Before accepting any change suggested by Copilot, check that it does not break code that was previously working. A fix that resolves one bug while silently breaking another is worse than the original problem, as it introduces a regression that may not be visible until production. Always re-run the test suite against a proposed fix and pay particular attention to exception handling changes, which frequently swallow errors silently.
+
+---
+
+**Reasoning:**
+ - Up to 24.8% of AI-suggested code improvements introduced regressions, breaking previously correct behaviors [13].
+ - Exception handling fixes are the most common regression source, adding try/except can mask real failures.
+ - Fixes involving shared state (like the unbounded_cache in deduplicator.py) can affect multiple code paths in unexpected ways.
+ - A fix that passes a casual read but breaks a passing test is not ready to merge, regardless of how confident Copilot sounds.
+
+---
+
+**Examples:**
+
+**Good Example: Suggested Verification:**
+
+```text
+ - Ask Copilot to state the regression risk for every fix it suggests: Low, Medium, or High.
+ - Ask which currently-passing tests could break if each fix is applied.
+ - Request a correctness section that tests each function against all valid inputs, not just the happy path .
+ - Ask for an improvement plan that separates what to change based on the risks.
+ - Ask Copilot to flag any fix that requires human judgment and cannot be resolved automatically.
+```
+
+**Bad Example: No Verification**
+
+```text
+Fix all the bugs you found in crash_dedup/ project
+```
 
 ---
 
@@ -286,6 +444,27 @@ Ensure good testing principles like Blackbox testing, Whitebox testing, MC/DC te
 **Bad Example:**
 
 Writing meaningless test cases to inflate high test coverage.
+
+---
+
+### Guideline 11: Issues That Require Human Judgment
+
+**Description:**
+
+Even with well-structured prompts and guidelines, certain issues cannot be fully resolved by AI alone:
+ - Cihan et al. [13] found LLMs failed to correctly assess code correctness in roughly 1 in 3 cases, leading to their proposed Human-in-the-Loop process.
+ - Szymanski et al. [16] found that LLM-judge agreement with subject-matter experts ranges only 60-68% on domain-specific tasks.
+ - Wang et al. [17] showed LLMs fall short on security, architecture, and regulatory decisions even when prompts are well-structured
+ - Copilot can detect the symptoms of an issue, but a human must assess the context, risk, and consequences before making the final call
+
+---
+
+**Tasks for Human Evaluation:**
+1.	**Manual inspection:** Carefully review each remaining failing test and trace the bug to the exact function and line of code.
+2.	**Root cause analysis:** For each remaining bug, explain why the LLM failed to detect it.
+3.	**Targeted prompting:** For each remaining issue, craft a precise, targeted prompt that guides the LLM to the specific fix. This models the Review Responsible role from Haider et al[15].
+4.	**Apply final fixes:** Fix all remaining issues so that the complete test suite passes.
+5.	**Final verification:** Run the full test suite and confirm 100% pass rate.
 
 ---
 
@@ -404,5 +583,9 @@ Review this PR and suggest improvements.
 [17] Ayala, Jessy, Yu-Jye Tung, and Joshua Garcia. "A {Mixed-Methods} Study of {Open-Source} Software Maintainers On Vulnerability Management and Platform Security Features." 34th USENIX Security Symposium (USENIX Security 25). 2025.
 
 [18] Shimizu, Sasara, and Yoshiki Higo. "Coverage Isn’t Enough: SBFL-Driven Insights into Manually Created vs. Automatically Generated Tests." International Conference on Product-Focused Software Process Improvement. Cham: Springer Nature Switzerland, 2025.
+
+[19] Szymanski, M. et al. (2024). Limitations of the LLM-as-a-Judge Approach for Evaluating LLM Outputs in Expert Knowledge Tasks. In Proceedings of the 30th International Conference on Intelligent User Interfaces (IUI 2025). ACM. DOI: 10.1145/3708359.3712091. Available at: https://dl.acm.org/doi/10.1145/3708359.3712091
+
+[20] Wang, R., Guo, J., Gao, C., Fan, G., Chong, C. Y., & Xia, X. (2025). Can LLMs Replace Human Evaluators? An Empirical Study of LLM-as-a-Judge in Software Engineering. arXiv preprint arXiv:2502.06193. Available at: https://arxiv.org/abs/2502.06193
 
 ---
