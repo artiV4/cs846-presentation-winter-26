@@ -367,7 +367,7 @@ storage.py: search_by_error_type(), line 79
 
 ```
 
-**Bad Example: NoT Strutured**
+**Bad Example: Not Strutured**
 
 ```text
 Can you check the crash_dedup code and tell me if there are any problems?
@@ -380,9 +380,9 @@ Can you check the crash_dedup code and tell me if there are any problems?
 
 Not all issues in a code review carry the same weight or urgency. Before suggesting any fix, classify the finding as a Bug Fix, Enhancement, or Documentation issue, and assign it a priority. This prevents low-priority style suggestions from being treated with the same urgency as a security vulnerability and stops reviewers from merging code that still has critical correctness failures.
 Use this taxonomy for every finding:
- - BUG FIX, code produces wrong output, crashes, or has a security flaw. Must be fixed before merge.
- - ENHANCEMENT, code is correct but can be improved in readability, performance, or structure. Negotiable priority.
- - DOCUMENTATION, missing or misleading docstrings, comments, or type hints.
+ - **BUG FIX:** code produces wrong output, crashes, or has a security flaw. Must be fixed before merge.
+ - **ENHANCEMENT:** code is correct but can be improved in readability performance, or structure. Negotiable priority.
+ - **DOCUMENTATION:** missing or misleading docstrings, comments, or type hints.
 
 Label each finding with its category and priority:
  - P1- block merge, fix immediately
@@ -414,7 +414,7 @@ Label each finding with its category and priority:
 
 ```
 
-**Bad Example: NoT Categorized**
+**Bad Example: Not Categorized**
 
 ```text
 Review crash_dedup/ and suggest improvements.
