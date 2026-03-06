@@ -385,9 +385,9 @@ Use this taxonomy for every finding:
  - **DOCUMENTATION:** missing or misleading docstrings, comments, or type hints.
 
 Label each finding with its category and priority:
- - P1- block merge, fix immediately
- - P2- fix soon after merge
- - P3- nice-to-have, low urgency
+ - P1: block merge, fix immediately
+ - P2: fix soon after merge
+ - P3: nice-to-have, low urgency
 
 
 ---
