@@ -1,4 +1,4 @@
-# Guideline: Use a Structured, Context-First Review Prompt [Task B4]
+# Guideline 4: Use a Structured, Context-First Review Prompt [Task B4]
 
 ## Description
 
@@ -15,7 +15,7 @@ Together, these findings converge on the same principle: the model needs to unde
 ### Good Example
 
 ```
-Ask the LLM to summarize the PR's intent first and identify high-risk aread, then instruct it to review only for a specific, named set of concerns.
+Ask the LLM to summarize the PR's intent first and identify high-risk areas, then instruct it to review only for a specific, named set of concerns.
 ```
 
 ### Bad Example
@@ -26,7 +26,7 @@ Review this pull request and suggest improvements.
 
 ----
 
-# Guideline: Require Evidence-Grounded Justification Before Accepting LLM Claims [Task B2-B3]
+# Guideline 5: Require Evidence-Grounded Justification Before Accepting LLM Claims [Task B2 and B3]
 
 ## Description
 
@@ -34,7 +34,7 @@ When prompting an LLM to evaluate tests or validate a reviewer comment, explicit
 
 ## Reasoning
 
-LLMs reviewing code tend to produce confident-sounding but loosely grounded outputs — asserting that a test is missing or a security risk exists without pointing to the specific code that demonstrates it. Empirical studies on code review workflows show that developers only act on and trust LLM feedback when it is tied to concrete code artifacts rather than general observations. Research on automated code review in practice reinforces this: vague, unlocalized comments increase review overhead and erode reviewer trust in automated tools over time, regardless of whether the underlying observation is correct. At industrial scale, the cost of ungrounded false positives becomes even more significant — systems built for malicious PR detection at companies like Meta explicitly filter LLM outputs that lack localized justification, because acting on ungrounded claims wastes engineering time and creates alert fatigue. Practitioner guidance on writing effective LLM instructions similarly emphasizes requiring the model to cite locations as a key technique for improving precision and reducing hallucinated architectural criticism.
+LLMs reviewing code tend to produce confident-sounding but loosely grounded outputs, asserting that a test is missing or a security risk exists without pointing to the specific code that demonstrates it. Empirical studies on code review workflows show that developers only act on and trust LLM feedback when it is tied to concrete code artifacts rather than general observations [3]. Practitioner guidance on writing effective LLM instructions similarly emphasizes requiring the model to cite locations as a key technique for improving precision and reducing hallucinated architectural criticism.
 
 Requiring evidence-grounded justification addresses all of these failure modes in a single instruction: it forces the model to anchor every claim in the actual diff before surfacing it.
 
@@ -57,7 +57,7 @@ Review the tests and identify what's missing.
 
 ----
 
-# Guideline: Explicitly State Assumptions and Non-Goals [Task B1]
+# Guideline 6: Explicitly State Assumptions and Non-Goals [Task B1]
 
 ## Description
 
@@ -91,7 +91,7 @@ This complements the structured, context-first guideline:
 ### Good Example
 
 ```text
-Ask the LLM to explicitly list the assumptions about what the system handles outside this PR (e.g., auth, validation), and state what the model should not do (e.g., suggest redesigns, flag out-of-scope modules). Then get a focused review of what's within the boundaries
+Explicitly list the assumptions about what the system handles outside this PR (e.g., auth, validation), and state what the model should not do (e.g., suggest redesigns, flag out-of-scope modules). Then get a focused review of what's within the boundaries
 ```
 
 ### Bad Example
