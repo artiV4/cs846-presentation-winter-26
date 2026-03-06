@@ -2,85 +2,48 @@
 
 ## Evaluation Description
 
-The test adequacy review should:
-
-- Focus strictly on test quality, not re-reviewing production code.
-- Identify brittle or misleading tests (e.g., hardcoded assumptions, fragile fixtures).
-- Detect meaningful gaps between intended behavior and actual coverage.
-- Highlight missing edge cases relevant to the PR’s scope.
-- Avoid drifting into architectural redesign or unrelated concerns.
-- Propose the minimum additional tests required before merge.
+The review should:
+- Identify brittle or misleading tests by pointing to specific test names and the exact lines that make them brittle.
+- Identify missing edge cases by referencing the specific test or function that lacks coverage.
+- Identify gaps between intended behavior and actual coverage by citing both the code and the test (or lack of one).
+- Propose only the minimum additional tests needed before merge — not a comprehensive wishlist.
+- Ground every finding in a specific line or test name from the diff.
 
 ---
 
 ## Bad Example
 
-### Characteristics of Output:
+### Prompt Used
+```
+Review only test quality. Identify brittle/misleading tests, missing edge cases, and gaps between intended behavior and coverage. Propose the minimum additional tests needed before merge.
+```
 
-- Mixes test-quality critique with broader security and architectural concerns.
-- Expands into areas not directly tied to the PR’s scope (e.g., SQL injection, privilege escalation).
-- Suggests many additional tests without clearly prioritizing minimum necessary coverage.
-- Raises speculative concerns not strongly grounded in the actual test suite.
-- Does not clearly separate brittle tests from general missing coverage.
-- Overgeneralizes risk categories without tying them to specific test files or fixtures.
+### Characteristics of Output
+- Findings reference test names but rarely quote the specific lines that make them brittle (e.g., "hardcoded user counts" without citing the actual assertion).
+- Flags missing tests for JWT expiry, RBAC, and SQL injection — none of which are in scope for this PR or its stated constraints.
+- "Minimum additional tests" list contains 7 items, several of which are out of scope (role-based access control, SQL injection, seed logic rollback).
+- No distinction between what the tests *document intentionally* (e.g., the skipped test) and what is genuinely missing.
+- Summary repeats the findings without adding new information.
 
 ### Why This Is Weak
-
-- The review partially drifts into broader system hardening rather than strictly evaluating test quality.
-- It proposes an extensive list of additional tests without distinguishing essential coverage from nice-to-have improvements.
-- It treats the test suite as incomplete in general rather than evaluating it in the context of this specific PR.
-- It lacks disciplined scope control, reducing clarity about what is actually required before merge.
-
-While many suggestions are reasonable, the output resembles a generalized test-hardening checklist rather than a scoped PR test adequacy review.
+Without being instructed to ground findings in specific lines, the LLM drifted into generic test advice — suggesting tests for concerns the PR explicitly does not address. The "minimum tests before merge" list is not minimum at all; it includes items that would be appropriate for a broader test audit but not for this specific PR.
 
 ---
 
 ## Good Example
 
 ### Prompt Used
+```
+I am reviewing a pull request. Below is the diff, PR description, and test file. [diff] [PR_description] [location to test_user_helpers.py]. Review only for test quality: brittle or misleading tests, missing edge cases, and gaps between intended behavior and coverage. For each finding: 1. Quote the specific test or line of code that supports your claim. 2. Explain the gap using only those lines. 3. If you cannot point to a specific line, do not include the finding. End with the minimum list of additional tests needed before merge.
+```
 
-The prompt included:
-
-- A structured context summary requirement.
-- Explicit assumptions about test isolation and fixtures.
-- Clear non-goals (no performance/security review unless it affects tests).
-- Explicit instruction to review only test quality.
-- Focus on brittle tests, edge cases, coverage gaps, and minimum additions.
-
-### Characteristics of the Output
-
-- Begins with a structured summary of intent, affected components, and high-risk areas.
-- Clearly separates brittle tests from missing edge cases.
-- Identifies specific weaknesses (e.g., skipped timeout test, reliance on certain response fields).
-- Stays within test quality scope without re-reviewing implementation logic.
-- Distinguishes between documented intended behavior and actual coverage.
-- Proposes targeted, minimal additional tests rather than broad system redesign.
-- Avoids architectural suggestions or unrelated refactoring.
+### Characteristics of Output
+- Every finding quotes the exact assertion or decorator that is the problem (e.g., `assert len(calls["urls"]) == 2` in `test_format_user_for_header_avoids_extra_calls`).
+- Correctly distinguishes between intentionally skipped tests (documented behavior not yet implemented) and genuinely missing coverage.
+- Identifies that `test_get_user_list_filters_role_and_hides_internal_id` is misleading because it asserts `"id" in u` while the comment implies the opposite intent — a subtle but important finding that requires reading the specific line.
+- Minimum tests list contains 5 targeted items, all tied directly to gaps identified in the diff.
+- Does not suggest out-of-scope tests (JWT, RBAC, SQL injection).
 
 ### Why This Is Better
-
-- The review is disciplined and narrowly scoped to test adequacy.
-- It avoids conflating test critique with production code critique.
-- It identifies concrete coverage gaps directly tied to PR behavior.
-- It focuses on reliability and isolation rather than speculative system risks.
-- It proposes incremental, merge-ready improvements rather than a large expansion of scope.
-- The structure mirrors how real PR reviewers evaluate test coverage before approval.
-
----
-
-## Overall Comparative Insight
-
-Both outputs identify meaningful gaps in test coverage. However, the guided version demonstrates:
-
-- Stronger scope discipline.
-- Clearer separation between brittle tests and missing coverage.
-- Better prioritization of minimal additional tests before merge.
-- Reduced drift into broader security or architectural concerns.
-
-The unguided version, while technically sound, tends to:
-
-- Over-expand into general system hardening.
-- Propose broader test additions without clearly prioritizing necessity.
-- Blend multiple risk domains rather than staying test-focused.
-
-This comparison shows that structured, context-first prompting improves precision and scope control in LLM-assisted test adequacy reviews.
+By requiring line-level evidence, the LLM caught a subtle misleading test that the naive prompt missed entirely — the test that *documents* ID exposure while *implying* it should be hidden. The minimum tests list is genuinely minimal because the LLM could only include items it could justify with a specific line, which filtered out the generic suggestions that appeared in the naive output.
+Backend code review problem setup and feedback implementation - Claude

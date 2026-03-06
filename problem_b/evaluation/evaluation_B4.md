@@ -2,91 +2,47 @@
 
 ## Evaluation Description
 
-The correctness and constraint-fit review should:
-
-- Focus strictly on functional correctness and alignment with the PR description.
-- Tie each finding to a specific violated requirement or constraint.
-- Clearly classify severity (Blocker, Major, Minor, Question).
-- Provide a minimal, actionable fix for each issue.
-- Avoid rehashing B1/B2 without new synthesis.
-- End with a justified merge decision grounded in prior findings.
+The review should:
+- Begin with a structured context summary: PR intent, affected components, and high-risk areas.
+- List findings with severity (`Blocker`, `Major`, `Minor`, `Question`), impacted file(s), violated requirement or constraint, and a minimal fix.
+- Not repeat security or test findings already covered in B1 and B2.
+- End with a justified merge decision (`Approve`, `Request Changes`, or `Reject`) based on the findings.
 
 ---
 
 ## Bad Example
 
-### Characteristics of Output:
+### Prompt Used
+```
+Review functional correctness and PR-constraint alignment. List findings with severity 
+(Blocker, Major, Minor, Question) and include: impacted file(s), violated requirement constraint, and minimal fix. End with a merge decision based on all prior considerations.
+```
 
-- Lists issues but does not clearly anchor them to explicit PR constraints.
-- Blends functional correctness and test concerns without prioritization.
-- Repeats earlier findings without synthesizing them.
-- Provides minimal fixes that are somewhat broad (“restrict exposure,” “add tests”) without scoping impact.
-- Merge decision is reasonable but not tightly justified against constraint violations.
-- Does not explicitly frame findings relative to the PR’s stated intent and scope.
+### Characteristics of Output
+- Jumps directly into findings without first establishing what the PR is trying to do or which components are affected.
+- Repeats findings from B1 (internal ID exposure) and B2 (missing edge case tests, brittle assertions) instead of focusing on new correctness and constraint-fit issues.
+- Finding 5 ("Functional Correctness") is not a finding — it states no bugs were found and suggests a vague audit, which adds no actionable value.
+- The merge decision ("Request Changes") is based largely on B1 and B2 findings rather than anything specific to correctness or constraint fit.
+- No findings tied to specific files like `database.py` or `seed.py`, which are the most complex parts of this PR.
 
 ### Why This Is Weak
-
-- The review reads like a continuation of B1/B2 rather than a final integration step.
-- It lacks strong alignment between findings and the PR’s documented constraints.
-- Severity labels are present, but prioritization logic is not strongly articulated.
-- The merge decision feels somewhat procedural rather than clearly constraint-driven.
-- It does not clearly separate functional correctness from broader hardening suggestions.
-
-The output is technically reasonable but lacks synthesis and constraint-focused rigor.
+Without a context summary step, the LLM had no structured understanding of the PR before reviewing it. It defaulted to rehashing prior findings rather than identifying new correctness issues. The most technically complex parts of the diff — the database migration logic and seed normalization — were not examined at all.
 
 ---
 
 ## Good Example
 
 ### Prompt Used
+```
+I am reviewing a pull request. Below is the diff and PR description. [diff] [PR_description] Step 1 — Context summary: - Summarize the intent of this PR. - Identify the affected components. - Highlight any high-risk or complex areas. Step 2 — Focused review: Review only for functional correctness and PR-constraint alignment. For each finding include: - Severity (Blocker, Major, Minor, or Question) - Impacted file(s) - Violated requirement or constraint from the PR description - Minimal fix Do not repeat security or test findings from prior review passes. End with a merge decision: Approve, Request Changes, or Reject.
+```
 
-The prompt included:
-
-- A structured context summary requirement.
-- Explicit scope limitation to correctness and constraint alignment.
-- Assumptions about authentication and validation boundaries.
-- Non-goals preventing performance/security drift.
-- Explicit instruction to classify severity and provide minimal fixes.
-- Requirement to end with a merge decision.
-
-### Characteristics of the Output
-
-- Begins with structured PR intent and affected components.
-- Separates findings into clearly scoped categories.
-- Ties each issue to a requirement or constraint.
-- Assigns severity levels in a disciplined manner.
-- Provides minimal, proportional fixes rather than broad redesign.
-- Distinguishes between Major vs Minor vs Question findings.
-- Ends with a merge decision grounded in identified gaps.
-- Synthesizes prior B1–B3 concerns without duplicating analysis.
+### Characteristics of Output
+- Opens with a structured context summary that identifies affected components (including `database.py`, `seed.py`, `main.py`) and flags the migration logic and seed normalization as high-risk areas before any findings are listed.
+- Findings are scoped to new correctness issues not covered in B1/B2: the `created_at` migration default being set to an empty string instead of `CURRENT_TIMESTAMP`, and the missing fallback in `_normalize_user` when both `name` and `full_name` are absent.
+- Does not re-raise security or test concerns from earlier passes.
+- Merge decision ("Request Changes") is justified specifically by the two correctness findings, making it easy to trace back to the evidence.
 
 ### Why This Is Better
-
-- The review is clearly PR-aligned rather than generic.
-- Findings are organized by constraint impact.
-- Severity classifications feel more deliberate.
-- It demonstrates merge-readiness thinking (what must change before merge vs what can wait).
-- It shows boundary discipline: no architectural redesign drift.
-- It resembles how senior reviewers evaluate production PRs before approval.
-
----
-
-## Overall Comparative Insight
-
-Across this task:
-
-- The unguided output identified relevant issues but lacked strong synthesis and constraint anchoring.
-- The guided output demonstrated improved prioritization, structure, and PR-scope awareness.
-- The guided version better distinguished between:
-  - Critical constraint violations,
-  - Test coverage gaps,
-  - Documentation/maintainability concerns.
-- The merge decision in the guided output is more clearly justified by Major findings.
-
-This task highlights that structured prompting improves:
-- Constraint alignment,
-- Severity calibration,
-- Merge decision clarity,
-- And production-level review framing.
-
-However, both versions remain technically competent — the improvement is primarily in rigor and discipline rather than raw correctness.
+The context summary forced the LLM to read and understand the full scope of the PR before issuing findings. This is what surfaced the `database.py` migration bug and the seed normalization gap — both of which require understanding what the PR intends before you can identify where it falls short. The naive prompt skipped this step entirely and missed the most technically substantive issues in the diff.
+Backend code review problem setup and feedback implementation - Claude
