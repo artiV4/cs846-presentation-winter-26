@@ -235,26 +235,22 @@ Writing meaningless test cases to inflate high test coverage.
 
 > **Note:** Guidelines should be actionable, specific, and usable during real coding tasks.
 
-### Guideline 1: Keep Pull Requests Small and Focused
+### Guideline 1: Decompose Large PR Reviews into Scoped Passes
 **Description:**  
-Require pull requests to contain one logical change (e.g., a single feature, fix, or refactor). Avoid bundling unrelated modifications in the same PR.
+If a PR is too broad, review it in small, scoped passes instead of one monolithic pass. Use non-overlapping review scopes that match your evaluation tasks (security/data exposure, test adequacy, peer-comment validation, then correctness + merge decision).
 
 **Reasoning:**  
-Smaller PRs reduce cognitive load, improve defect detection, and make reviews faster and more thorough. Large, mixed-purpose PRs hide risk and often receive superficial approval—especially in AI-accelerated workflows where diffs can grow quickly.
-
-In modern AI-assisted workflows, this becomes even more important:
-- LLMs may generate large diffs quickly.
-- Reviewers may assume AI-generated changes are safe.
-- Subtle logic issues can hide inside extensive formatting or refactoring changes.
+This keeps findings specific, reduces duplicated comments, and makes final decisions more defensible. It also aligns directly with Problem B's B1-B4 structure.
 
 **Good Example:**
-PR: “Fix null check in authentication flow”
-– Small logic change
-– Corresponding test updates
-– No unrelated refactoring
+For one PR, run four focused passes:
+- Pass 1: Security and data exposure only.
+- Pass 2: Test adequacy only.
+- Pass 3: Validate peer review comment accuracy with code evidence.
+- Pass 4: Correctness/constraint fit, then final merge decision.
 
 **Bad Example:**
-PR: “Refactor + Cleanup + Add feature + Upgrade deps”
+Review the entire PR in one generic prompt and mix all findings together.
 
 ---
 
@@ -307,4 +303,3 @@ PR: “Refactor + Cleanup + Add feature + Upgrade deps”
 [18] Shimizu, Sasara, and Yoshiki Higo. "Coverage Isn’t Enough: SBFL-Driven Insights into Manually Created vs. Automatically Generated Tests." International Conference on Product-Focused Software Process Improvement. Cham: Springer Nature Switzerland, 2025.
 
 ---
-
