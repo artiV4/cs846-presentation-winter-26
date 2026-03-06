@@ -63,9 +63,9 @@ Use the PR description and diff as the source of intent, constraints, boundaries
 Review only security/trust-boundary risks: auth boundaries, sensitive data exposure, internal ID leakage, input handling, and URL/external-call safety. For each risk, include: attack/failure path, impacted endpoint/helper, and mitigation.
 
 **Starter Code:**  
-**PR To Review:** [Add user helper module and seed data with tests #16](https://github.com/U70-TK/cs846-presentation-winter-26/pull/16) on branch [feat-user-helper](https://github.com/U70-TK/cs846-presentation-winter-26/tree/feat-user-helper)
+*PR To Review:* [Add user helper module and seed data with tests #16](https://github.com/U70-TK/cs846-presentation-winter-26/pull/16) on branch [feat-user-helper](https://github.com/U70-TK/cs846-presentation-winter-26/tree/feat-user-helper)
 
-**Diff and Commit Details:** [https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch](https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch)
+*Diff and Commit Details:* [https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch](https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch)
 
 #### Problem B2: Test Adequacy [4 mins]
 
@@ -73,11 +73,11 @@ Review only security/trust-boundary risks: auth boundaries, sensitive data expos
 Review only test quality. Identify brittle/misleading tests, missing edge cases, and gaps between intended behavior and coverage. Propose the minimum additional tests needed before merge.
 
 **Starter Code:**  
-**PR To Review:** [Add user helper module and seed data with tests #16](https://github.com/U70-TK/cs846-presentation-winter-26/pull/16) on branch [feat-user-helper](https://github.com/U70-TK/cs846-presentation-winter-26/tree/feat-user-helper)
+*PR To Review:* [Add user helper module and seed data with tests #16](https://github.com/U70-TK/cs846-presentation-winter-26/pull/16) on branch [feat-user-helper](https://github.com/U70-TK/cs846-presentation-winter-26/tree/feat-user-helper)
 
-**Diff and Commit Details:** [https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch](https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch)
+*Diff and Commit Details:* [https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch](https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch)
 
-**Test Files:** `\problem_b\tests` on branch [feat-user-helper](https://github.com/U70-TK/cs846-presentation-winter-26/tree/feat-user-helper)
+*Test Files:* `\problem_b\tests` on branch [feat-user-helper](https://github.com/U70-TK/cs846-presentation-winter-26/tree/feat-user-helper)
 
 #### Problem B3: Peer Review Comment Validation [5 mins]
 
@@ -93,11 +93,11 @@ and in `problem_b/user_helpers.py` line 139 - 142:
 You are unsure whether this comment is accurate. Use an LLM to validate the comment against the PR description, diff, and code in `problem_b/`. Classify it as `Accurate`, `Partially Accurate`, or `Inaccurate`, then provide brief reasoning and a recommended follow-up action.
 
 **Starter Code:**  
-**PR To Review:** [Add user helper module and seed data with tests #16](https://github.com/U70-TK/cs846-presentation-winter-26/pull/16) on branch [feat-user-helper](https://github.com/U70-TK/cs846-presentation-winter-26/tree/feat-user-helper)
+*PR To Review:* [Add user helper module and seed data with tests #16](https://github.com/U70-TK/cs846-presentation-winter-26/pull/16) on branch [feat-user-helper](https://github.com/U70-TK/cs846-presentation-winter-26/tree/feat-user-helper)
 
-**Diff and Commit Details:** [https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch](https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch)
+*Diff and Commit Details:* [https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch](https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch)
 
-**Code:** `\problem_b\user_helpers.py` on branch [feat-user-helper](https://github.com/U70-TK/cs846-presentation-winter-26/tree/feat-user-helper)
+*Code:* `\problem_b\user_helpers.py` on branch [feat-user-helper](https://github.com/U70-TK/cs846-presentation-winter-26/tree/feat-user-helper)
 
 #### Problem B4: Correctness and Constraint Fit [3 mins]
 
@@ -105,9 +105,9 @@ You are unsure whether this comment is accurate. Use an LLM to validate the comm
 After completing B1 and B2, review functional correctness and PR-constraint alignment. List findings with severity (`Blocker`, `Major`, `Minor`, `Question`) and include: impacted file(s), violated requirement/constraint, and minimal fix. End with a merge decision (`Approve`, `Request Changes`, or `Reject`) based on all prior considerations.
 
 **Starter Code:**  
-**PR To Review:** [Add user helper module and seed data with tests #16](https://github.com/U70-TK/cs846-presentation-winter-26/pull/16) on branch [feat-user-helper](https://github.com/U70-TK/cs846-presentation-winter-26/tree/feat-user-helper)
+*PR To Review:* [Add user helper module and seed data with tests #16](https://github.com/U70-TK/cs846-presentation-winter-26/pull/16) on branch [feat-user-helper](https://github.com/U70-TK/cs846-presentation-winter-26/tree/feat-user-helper)
 
-**Diff and Commit Details:** [https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch](https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch)
+*Diff and Commit Details:* [https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch](https://patch-diff.githubusercontent.com/raw/U70-TK/cs846-presentation-winter-26/pull/16.patch)
 
 ---
 
