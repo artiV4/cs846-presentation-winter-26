@@ -9,9 +9,13 @@ This section defines how students can determine whether they solved the example 
 
 Criteria should be applicable to any problem in this topic.
 
-* Criteria 1
-* Criteria 2
-* Criteria n
+- **Groundedness in Code Evidence:** Check whether the model’s findings are supported by specific references to files, functions, or line numbers in the code.
+
+- **Scope and Constraint Adherence:** Assess whether the model follows the prompt constraints and avoids raising issues that are explicitly out of scope.
+
+- **Actionability of Review Feedback:** Examine whether the model provides clear, actionable feedback including the problem, its impact, and a concrete suggested fix.
+
+- **Detection of Critical Issues:** Measure whether the model successfully identifies important risks such as correctness bugs, security vulnerabilities, or missing test coverage.
 
 ---
 
