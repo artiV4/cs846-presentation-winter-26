@@ -518,15 +518,15 @@ Even with well-structured prompts and guidelines, certain issues cannot be fully
 
 [12] Qian, Callan Lamb Christoph Hamsen, Julien Doutre, Jason Foral, Kassen. “Detecting Malicious Pull Requests at Scale With LLMs | Datadog.” Datadog, 21 Oct. 2025, www.datadoghq.com/blog/engineering/malicious-pull-requests.
 
-[13] 1.	Cihan, B., Noack, A., Cihan, T., & Buhnova, B. (2025). Evaluating Large Language Models for Code Review. arXiv preprint arXiv:2505.20206. Available at: https://arxiv.org/abs/2505.20206
+[13] Cihan, B., Noack, A., Cihan, T., & Buhnova, B. (2025). Evaluating Large Language Models for Code Review. arXiv preprint arXiv:2505.20206. Available at: https://arxiv.org/abs/2505.20206
 
-[14] 2.	Collante, M. et al. (2025). GPT Impact on Pull Request Workflow. (Based on empirical analysis of GPT-assisted pull requests on GitHub.)
+[14] Collante, M. et al. (2025). GPT Impact on Pull Request Workflow. (Based on empirical analysis of GPT-assisted pull requests on GitHub.)
 
-[15] 3.	Haider, M. A., Mostofa, A. B., Mosaddek, S. S. B., & Islam, M. R. (2024). Prompting and Fine-tuning Large Language Models for Automated Code Review Comment Generation. arXiv preprint arXiv:2411.10129. Available at: https://arxiv.org/abs/2411.10129
+[15] Haider, M. A., Mostofa, A. B., Mosaddek, S. S. B., & Islam, M. R. (2024). Prompting and Fine-tuning Large Language Models for Automated Code Review Comment Generation. arXiv preprint arXiv:2411.10129. Available at: https://arxiv.org/abs/2411.10129
 
-[16] 4.	Szymanski, M. et al. (2024). Limitations of the LLM-as-a-Judge Approach for Evaluating LLM Outputs in Expert Knowledge Tasks. In Proceedings of the 30th International Conference on Intelligent User Interfaces (IUI 2025). ACM. DOI: 10.1145/3708359.3712091. Available at: https://dl.acm.org/doi/10.1145/3708359.3712091
+[16] Szymanski, M. et al. (2024). Limitations of the LLM-as-a-Judge Approach for Evaluating LLM Outputs in Expert Knowledge Tasks. In Proceedings of the 30th International Conference on Intelligent User Interfaces (IUI 2025). ACM. DOI: 10.1145/3708359.3712091. Available at: https://dl.acm.org/doi/10.1145/3708359.3712091
 
-[17] 5.	Wang, R., Guo, J., Gao, C., Fan, G., Chong, C. Y., & Xia, X. (2025). Can LLMs Replace Human Evaluators? An Empirical Study of LLM-as-a-Judge in Software Engineering. arXiv preprint arXiv:2502.06193. Available at: https://arxiv.org/abs/2502.06193
+[17] Wang, R., Guo, J., Gao, C., Fan, G., Chong, C. Y., & Xia, X. (2025). Can LLMs Replace Human Evaluators? An Empirical Study of LLM-as-a-Judge in Software Engineering. arXiv preprint arXiv:2502.06193. Available at: https://arxiv.org/abs/2502.06193
 
 
 ---
