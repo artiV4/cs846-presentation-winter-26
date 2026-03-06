@@ -19,9 +19,9 @@
 ## Relevant Guidelines per Problem
 | Question |          Guidelines               |
 |----------|-----------------------------------|
-| A.1 |  |
-| A.2 |  |
-| A.3 |  |
+| A.1 | random test |
+| A.2 | 7, 8 |
+| A.3 | 9, 10, 11 |
 | B.1 | 6 |
 | B.2 | 5 |
 | B.3 | 5 |
@@ -420,7 +420,7 @@ Label each finding with its category and priority:
 Review crash_dedup/ and suggest improvements.
 ```
 ---
-### Guideline 9: Categorize Every Issue Before Suggesting a Fix
+### Guideline 10: Verify Every Suggested Fix Against Existing Tests
 
 **Description:**
 
@@ -454,7 +454,7 @@ Fix all the bugs you found in crash_dedup/ project
 ```
 ---
 
-### Guideline 10: Where Human Judgment Is Essential
+### Guideline 11: Where Human Judgment Is Essential
 
 **Description:**
 
