@@ -46,4 +46,3 @@ I am reviewing a pull request. Below is the diff, PR description, and test file.
 
 ### Why This Is Better
 By requiring line-level evidence, the LLM caught a subtle misleading test that the naive prompt missed entirely — the test that *documents* ID exposure while *implying* it should be hidden. The minimum tests list is genuinely minimal because the LLM could only include items it could justify with a specific line, which filtered out the generic suggestions that appeared in the naive output.
-Backend code review problem setup and feedback implementation - Claude

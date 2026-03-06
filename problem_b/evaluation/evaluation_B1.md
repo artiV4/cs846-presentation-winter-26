@@ -26,7 +26,7 @@ For each risk, include: attack/failure path, impacted endpoint/helper, and mitig
 - Summary repeats points already made in the findings without adding new insight.
 
 ### Why This Is Weak
-The LLM was given no boundaries, so it hallucinated concerns about the surrounding system (auth, RBAC, token validation) that the PR explicitly says are out of scope. Without line references, none of the findings are immediately actionable — a reviewer would need to re-read the entire diff to locate the issue themselves.
+The LLM was given no boundaries, so it hallucinated concerns about the surrounding system (auth, RBAC, token validation) that the PR explicitly says are out of scope. Without line references, none of the findings are immediately actionable, a reviewer would need to re-read the entire diff to locate the issue themselves.
 
 ---
 
@@ -39,10 +39,10 @@ I am reviewing a pull request. Below is the diff and PR description. [diff] [PR_
 
 ### Characteristics of Output
 - Each finding includes specific line numbers and function names (e.g., `get_user_list` lines 61–75, `lookup_by_email` lines 89–101).
-- Authentication is acknowledged as enforced by FastAPI's dependency injection rather than flagged as a gap — consistent with the PR's stated assumptions.
+- Authentication is acknowledged as enforced by FastAPI's dependency injection rather than flagged as a gap which is consistent with the PR's stated assumptions.
 - External call safety finding is precise: correctly notes the base URL is fixed and trusted, and scopes the SSRF risk only to future changes.
 - Mitigations are concrete and tied to the specific lines identified.
 - Does not suggest architectural redesigns or out-of-scope changes.
 
 ### Why This Is Better
-By stating assumptions and non-goals upfront, the LLM stayed within the actual scope of the PR. The findings are immediately actionable because each one is anchored to a specific location in the code. The output is shorter and more precise — a reviewer can act on it directly without filtering out noise.
+By stating assumptions and non-goals upfront, the LLM stayed within the actual scope of the PR. The findings are immediately actionable because each one is anchored to a specific location in the code. The output is shorter and more precise, a reviewer can act on it directly without filtering out noise.
