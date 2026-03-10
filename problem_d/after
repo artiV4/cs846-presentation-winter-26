@@ -1,0 +1,44 @@
+**PR Review Findings**
+
+### Security
+
+- [Critical] `writeAuditEvent` in `usage.service.ts` executes a vendor binary (`audit_writer`) with user-supplied input (`message`). While message length and type are validated, there is a risk of command injection if the binary itself is not secure. Ensure the binary properly sanitizes input and does not allow shell injection. (Lines: `usage.service.ts`)
+- [Major] The audit log endpoint exposes the last 10 audit events. If audit logs contain sensitive information, consider access control for this endpoint. (Lines: `usage.controller.ts`, `usage.service.ts`)
+
+### Correctness
+
+- [Major] The backend expects the binary at `src/vendor/audit_writer` and the database at a relative path. If the backend is run from a different directory, path resolution may fail. Consider using configuration or environment variables for paths. (Lines: `usage.service.ts`)
+- [Minor] The frontend expects `/api/usage/audit-log` and `/api/usage/audit` endpoints. The backend provides these, but the README only documents `/usage/audit`. Update documentation for clarity. (Lines: `problem_d_backend/README.md`)
+
+### Error Handling
+
+- [Major] The backend throws `ForbiddenException` if the binary fails, but the error message may leak internal details. Consider returning a generic error message to the client and logging details server-side. (Lines: `usage.service.ts`)
+- [Minor] The frontend displays backend errors as plain text. Consider more user-friendly error handling. (Lines: `main.ts`)
+
+### Testing
+
+- [Major] No tests are provided for the new audit endpoints or binary execution. Add unit/integration tests for:
+  - Audit log retrieval
+  - Audit event writing (mock binary execution)
+  - Input validation and error cases
+
+### Maintainability
+
+- [Minor] The audit log feature is tightly coupled to a vendor binary. Document the binary’s expected behavior and interface for future maintainers. (Lines: `usage.service.ts`)
+- [Minor] The frontend and backend both use hardcoded endpoint paths. Consider centralizing API route definitions.
+
+---
+
+**Follow-up Questions for PR Owner**
+
+1. Has the vendor binary (`audit_writer`) been audited for security, especially regarding input handling and command injection?
+2. Is there any access control planned for audit log endpoints to prevent information leakage?
+3. Should the backend paths for the binary and database be configurable for deployment flexibility?
+4. Are there plans to add tests for the new audit functionality?
+5. Can you clarify the expected contents and sensitivity of audit log entries?
+
+---
+
+**Merge Decision: Request Changes**
+
+The PR introduces useful audit functionality but has critical security and correctness concerns, and lacks tests. Please address the above issues and questions before merging.

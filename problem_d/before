@@ -1,0 +1,55 @@
+### PR Review Findings
+
+#### 1. Frontend Audit Panel (`src/main.ts`, `src/styles.css`)
+- Adds an "Audit log" dashboard card, displaying audit entries and a button to trigger an audit event.
+- Fetches `/api/usage/audit-log` for log entries and `/api/usage/audit` (POST) to record new events.
+- UI changes are minimal and well-contained; new CSS aligns the audit button visually.
+
+#### 2. Vendor Executable (`src/vendor/audit_writer`)
+- Introduces a binary file for writing audit events to the database.
+- No source code for the binary is provided; this is a potential security and maintainability concern.
+- The backend service executes this binary to record audit events.
+
+#### 3. Database Schema and Seed (`schema.sql`, `seed.sql`)
+- Adds a new `audit_log` table with `id`, `event`, and `created_at`.
+- Seeds the table with a sample entry.
+- Changes are straightforward and non-breaking.
+
+#### 4. Backend Controller & Service (`usage.controller.ts`, `usage.service.ts`)
+- Adds endpoints: `GET /usage/audit-log` and `POST /usage/audit`.
+- Validates audit event messages (non-empty, max length).
+- Uses the vendor binary to write audit events, with error handling.
+- Updates documentation in README.md.
+
+---
+
+### Follow-up Questions
+
+1. **Vendor Binary Source & Security**
+   - Is the source code for `audit_writer` available for review? How is its integrity and security ensured?
+   - How is the binary built and maintained? Is it cross-platform (Linux, Windows, Mac)?
+
+2. **Error Handling**
+   - What happens if the binary is missing or fails? Is there a fallback or notification mechanism for admins?
+
+3. **Audit Log Privacy**
+   - Are audit log entries visible to all users, or is there any access control planned?
+
+4. **Testing**
+   - Are there automated tests for the new endpoints and audit functionality? If not, are you planning to add them?
+
+5. **Frontend/Backend Sync**
+   - Is the frontend expected to work if the backend audit endpoints are unavailable, or should it display an error?
+
+---
+
+### Merge Decision
+
+**Request Changes**
+
+- The PR is well-structured and implements the audit feature cleanly.
+- However, the introduction of a vendor binary without source or build instructions is a blocker for security, maintainability, and cross-platform compatibility.
+- Please provide the source code for `audit_writer`, or at minimum, documentation on its provenance, build process, and security review.
+- Address the above follow-up questions, especially regarding error handling and testing.
+
+Once these concerns are addressed, the PR can be approved.
